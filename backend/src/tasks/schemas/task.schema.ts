@@ -2,15 +2,16 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class Task extends Document {
-  @Prop({ required: true })
+export class Task {
   title: string;
-
-  @Prop()
   description: string;
-
-  @Prop({ required: true })
   projectId: string;
+
+  constructor(title: string, description: string, projectId: string) {
+    this.title = title;
+    this.description = description;
+    this.projectId = projectId;
+  }
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
