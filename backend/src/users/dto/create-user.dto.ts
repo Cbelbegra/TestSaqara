@@ -1,9 +1,9 @@
 export class CreateUserDto {
-  readonly username: string;
-  readonly password: string;
+    readonly username: string;
+    readonly password: string;
 
-  constructor(username: string, password: string) {
-    this.username = username;
-    this.password = password;
-  }
+    constructor(username: string, password: string) {
+        this.username = username;
+        this.password = password;
+    }
 }
