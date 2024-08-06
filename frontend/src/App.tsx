@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes, useParams } from 'react-router-dom'; // Import the useParams hook
+import Login from './components/Auth/Login';
+import Register from './components/Auth/Register';
+import Home from './pages/Home';
+import ProjectList from './components/Projects/ProjectList';
+import TaskList from './components/Tasks/TaskList';
+import TaskDetail from './components/Tasks/TaskDetail';
+import ProjectDetail from './components/Projects/ProjectDetail';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const TaskListWrapper: React.FC = () => {
+    const { projectId = '' } = useParams<{ projectId: string }>();
+    return <TaskList projectId={projectId} />;
+};
+
+const App: React.FC = () => {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/login" element={<Login/>} />
+                <Route path="/register" element={<Register/>} />
+                <Route path="/" element={<Home/>} />
+                <Route path="/projects" element={<ProjectList/>} />
+                <Route path="/projects/:projectId" element={<ProjectDetail/>} />
+                <Route path="/projects/:projectId/tasks/" element={<TaskListWrapper/>} />
+                <Route path="/projects/:projectId/tasks/:taskId" element={<TaskDetail/>} />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;
