@@ -1,36 +1,58 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/users`, { username, password });
-            console.log(response.data);
+            await axios.post(
+                `${process.env.REACT_APP_API_URL}/users`, 
+                { 
+                    username, 
+                    password 
+                }
+            );
+            toast.success('Successfully registered!, you may log in now.');
+            navigate('/login');
         } catch (error) {
-            setError('Registration failed. Please try again.');
+            toast.error('Registration failed. Please try again.');
             console.error(error);
         }
     };
 
     return (
-        <div>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username:</label>
-                    <input type="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+        <div className="container mt-5">
+            <h2 className="text-center mb-4">Register</h2>
+            <form onSubmit={handleSubmit} className="w-50 mx-auto">
+                <div className="form-group">
+                    <label htmlFor="username">Username:</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
                 </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <div className="form-group">
+                    <label htmlFor="password">Password:</label>
+                    <input
+                        type="password"
+                        className="form-control"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
                 </div>
-                {error && <p>{error}</p>}
-                <button type="submit">Register</button>
+                <button type="submit" className="btn btn-primary btn-block">Register</button>
             </form>
         </div>
     );

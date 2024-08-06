@@ -1,19 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import TaskForm from './TaskForm';
-
-interface Task {
-    _id: string;
-    title: string;
-    description: string;
-    projectId: string;
-}
+import { Task } from '../../types/types';
+import UseAuth from '../Hooks/UseAuth';
 
 const TaskList: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const token = localStorage.getItem('jwtToken');
-    const navigate = useNavigate();
 
     const fetchTasks = useCallback(async () => {
         try {
@@ -32,52 +26,29 @@ const TaskList: React.FC = () => {
         }
     }, [token, setTasks]);
 
-    useEffect(() => {
-        const checkToken = async () => {
-            if (token) {
-                try {
-                    const response = await axios.get(
-                        `${process.env.REACT_APP_API_URL}/auth/validate-token`, 
-                        {
-                            headers: 
-                            { 
-                                Authorization: `Bearer ${token}` 
-                            }
-                        }
-                    );
-                    if (response.data.valid) {
-                        fetchTasks();
-                    } else {
-                        navigate('/login');
-                    }
-                } catch (error) {
-                    navigate('/login');
-                    console.error(error);
-                }
-            } else {
-                navigate('/login');
-            }
-        };
-
-        checkToken();
-    }, [navigate, token, fetchTasks]);
+    UseAuth(fetchTasks);
 
     const handleTaskCreated = () => {
         fetchTasks();
     };
 
     return (
-        <div>
-            <h1>Tasks</h1>
-            <ul>
-                {tasks.map((task) => (
-                    <li key={task._id}>
-                        <Link to={`/tasks/${task._id}`}>
-                            {task.title}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
+        <div className="container mt-5">
+            <h1 className="mb-4 text-center">Tasks</h1>
+            {tasks.length === 0 ? (
+                <p className="text-center">No tasks available. Please create a new task.</p>
+            ) : (
+                <ul className="list-group mb-4">
+                    {tasks.map((task) => (
+                        <li key={task._id} className="list-group-item">
+                            <Link to={`/tasks/${task._id}`} className="text-decoration-none">
+                                {task.title}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <hr className="my-4" />
             <TaskForm onTaskCreated={handleTaskCreated} />
         </div>
     );
