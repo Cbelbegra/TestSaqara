@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -34,6 +35,7 @@ const Login: React.FC = () => {
                 {error && <p>{error}</p>}
                 <button type="submit">Login</button>
             </form>
+            <p>Don't have an account? <Link to="/register">Register here</Link></p>
         </div>
     );
 };

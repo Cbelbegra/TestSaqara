@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const ProjectForm: React.FC = () => {
+interface ProjectFormProps {
+    onProjectCreated?: () => void;
+}
+
+const ProjectForm: React.FC<ProjectFormProps> = ({ onProjectCreated }) => {
+    const [newProjectName, setNewProjectName] = useState('');
+    const [newProjectDescription, setNewProjectDescription] = useState('');
     const token = localStorage.getItem('jwtToken');
     if (!token) {
         throw new Error('No token found');
     }
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post(
+            await axios.post(
                 `${process.env.REACT_APP_API_URL}/projects`,
                 { 
-                    name: name,
-                    description: description
+                    name: newProjectName,
+                    description : newProjectDescription
                 },
                 {
                     headers: {
@@ -24,20 +28,34 @@ const ProjectForm: React.FC = () => {
                     },
                 }
             );
-            console.log(response.data);
+            setNewProjectName('');
+            setNewProjectDescription('');
+            if (onProjectCreated) {
+                onProjectCreated();
+            }
         } catch (error) {
-            console.error(error);
+            console.error('Failed to create the project:', error);
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <div>
-                <label>Project Title:</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-                <br />
+                <label>Project Name:</label>
+                <input
+                    type="text"
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    required
+                />
+            </div>
+            <div>
                 <label>Project Description:</label>
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+                <textarea
+                    value={newProjectDescription}
+                    onChange={(e) => setNewProjectDescription(e.target.value)}
+                    required
+                />
             </div>
             <button type="submit">Create Project</button>
         </form>

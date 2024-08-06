@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import ProjectForm from './ProjectForm'; 
 
 interface Project {
     _id: string;
@@ -11,28 +12,51 @@ interface Project {
 const ProjectList: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const token = localStorage.getItem('jwtToken');
-    if (!token) {
-        throw new Error('No token found');
-    }
+    const navigate = useNavigate();
+
+    const fetchProjects = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_URL}/projects`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setProjects(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [token, setProjects]);
+
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const response = await axios.get(
-                    `${process.env.REACT_APP_API_URL}/projects`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
+        const checkToken = async () => {
+            if (token) {
+                try {
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/auth/validate-token`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (response.data.valid) {
+                        fetchProjects();
+                    } else {
+                        navigate('/login');
                     }
-                );
-                setProjects(response.data);
-            } catch (error) {
-                console.error(error);
+                } catch (error) {
+                    navigate('/login');
+                    console.error(error);
+                }
+            } else {
+                navigate('/login');
             }
         };
-    
+        
+        checkToken();
+    }, [token, navigate, fetchProjects]);
+
+    const handleProjectCreated = () => {
         fetchProjects();
-    }, [token]);
+    };
 
     return (
         <div>
@@ -40,12 +64,13 @@ const ProjectList: React.FC = () => {
             <ul>
                 {projects.map((project) => (
                     <li key={project._id}>
-                        <Link to={`/projects/${project._id}/tasks`}>
-                            {project.name ? project.name : 'Unnamed Project'}
+                        <Link to={`/projects/${project._id}`}>
+                            {project.name}
                         </Link>
                     </li>
                 ))}
-        </ul>
+            </ul>
+            <ProjectForm onProjectCreated={handleProjectCreated} />
         </div>
     );
 };

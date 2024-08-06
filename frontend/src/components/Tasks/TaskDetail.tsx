@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 interface Task {
     id: string;
-    name: string;
+    title: string;
     description: string;
     projectId: string;
 }
@@ -12,19 +12,61 @@ interface Task {
 const TaskDetail: React.FC = () => {
     const { projectId, taskId } = useParams<{ projectId: string, taskId: string }>();
     const [task, setTask] = useState<Task | null>(null);
+    const token = localStorage.getItem('jwtToken');
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const checkToken = async () => {
+            if (token) {
+                try {
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/auth/validate-token`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (response.data.valid) {
+                        fetchTask();
+                    } else {
+                        navigate('/login');
+                    }
+                } catch (error) {
+                    navigate('/login');
+                    console.error(error);
+                }
+            } else {
+                navigate('/login');
+            }
+        };
+
         const fetchTask = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks/${taskId}`);
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/tasks/${taskId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
                 setTask(response.data);
             } catch (error) {
                 console.error(error);
             }
         };
 
-        fetchTask();
-    }, [taskId]);
+        checkToken();
+    }, [taskId, navigate, token]);
+
+    const handleDelete = async () => {
+        try {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/tasks/${taskId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            navigate('/tasks');
+        } catch (error) {
+            console.error('Failed to delete the task:', error);
+        }
+    };
 
     if (!task) {
         return <div>Loading...</div>;
@@ -32,8 +74,10 @@ const TaskDetail: React.FC = () => {
 
     return (
         <div>
-            <h2>{task.name}</h2>
+            <h2>{task.title}</h2>
             <p>{task.description}</p>
+            <p>{task.projectId}</p>
+            <button onClick={handleDelete}>DELETE</button>
         </div>
     );
 };

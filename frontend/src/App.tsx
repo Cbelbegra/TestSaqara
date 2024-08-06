@@ -7,11 +7,8 @@ import ProjectList from './components/Projects/ProjectList';
 import TaskList from './components/Tasks/TaskList';
 import TaskDetail from './components/Tasks/TaskDetail';
 import ProjectDetail from './components/Projects/ProjectDetail';
-
-const TaskListWrapper: React.FC = () => {
-    const { projectId = '' } = useParams<{ projectId: string }>();
-    return <TaskList projectId={projectId} />;
-};
+import ProjectForm from './components/Projects/ProjectForm';
+import TaskForm from './components/Tasks/TaskForm';
 
 const App: React.FC = () => {
     return (
@@ -22,8 +19,10 @@ const App: React.FC = () => {
                 <Route path="/" element={<Home/>} />
                 <Route path="/projects" element={<ProjectList/>} />
                 <Route path="/projects/:projectId" element={<ProjectDetail/>} />
-                <Route path="/projects/:projectId/tasks/" element={<TaskListWrapper/>} />
-                <Route path="/projects/:projectId/tasks/:taskId" element={<TaskDetail/>} />
+                <Route path="/projects/new" element={<ProjectForm/>} />
+                <Route path="/tasks/" element={<TaskList/>} />
+                <Route path="/tasks/:taskId" element={<TaskDetail/>} />
+                <Route path="/tasks/new" element={<TaskForm/>} />
             </Routes>
         </Router>
     );
