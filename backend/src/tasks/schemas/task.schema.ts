@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
 
 @Schema()
 export class Task {
-    @Prop()
+    @Prop({ required: true })
     title: string;
 
     @Prop()
@@ -12,7 +13,7 @@ export class Task {
     @Prop()
     status: string;
 
-    @Prop()
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true })
     projectId: string;
 
     constructor(title: string, description: string, status: string, projectId: string) {
