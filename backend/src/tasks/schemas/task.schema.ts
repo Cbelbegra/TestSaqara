@@ -3,15 +3,24 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class Task {
-  title: string;
-  description: string;
-  projectId: string;
+    @Prop()
+    title: string;
 
-  constructor(title: string, description: string, projectId: string) {
-    this.title = title;
-    this.description = description;
-    this.projectId = projectId;
-  }
+    @Prop()
+    description: string;
+
+    @Prop()
+    status: string;
+
+    @Prop()
+    projectId: string;
+
+    constructor(title: string, description: string, status: string, projectId: string) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.projectId = projectId;
+    }
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
