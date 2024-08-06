@@ -5,7 +5,7 @@ import { Task } from './schemas/task.schema';
 
 @Injectable()
 export class TasksService {
-    constructor(@InjectModel('Task') private readonly taskModel: Model<Task>) { }
+    constructor(@InjectModel(Task.name) private taskModel: Model<Task>) { }
 
     async create(task: Task): Promise<Task> {
         const newTask = new this.taskModel(task);
