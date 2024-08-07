@@ -92,6 +92,13 @@ L'application utilise `react-router-dom` pour gérer le routing. Voici un aperç
 
 Le fichier `App.tsx` contient la configuration du routing :
 
+## Documentation Swagger
+
+La documentation Swagger est disponible pour le backend et le frontend aux adresses suivantes :
+
+- **Backend** : [127.0.0.1:3001/api-docs](http://127.0.0.1:3001/api-docs)
+- **Frontend** : [127.0.0.1:3000/api-docs](http://127.0.0.1:3000/api-docs)
+
 ## Technologies utilisées
 
 - **Node.js** : Environnement d'exécution JavaScript.
@@ -102,6 +109,13 @@ Le fichier `App.tsx` contient la configuration du routing :
 - **Docker** : Pour la containerisation de la base de données MongoDB et des services backend/frontend.
 - **React** : Bibliothèque JavaScript pour construire des interfaces utilisateur.
 - **TypeScript** : Sur-ensemble typé de JavaScript qui ajoute des types statiques.
+
+## TODO
+
+- Modifier dans le back le "title" d'une task en "name".
+- Ajouter sur le front `useAuth` sur `TaskDetail` et `ProjectDetail` pour la vérification du token.
+- Fix warning sur le front.
+- Audit sur Back et Front pour la sécurité.
 
 ## Auteurs
 
