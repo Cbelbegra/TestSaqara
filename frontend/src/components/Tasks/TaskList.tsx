@@ -26,7 +26,7 @@ const TaskList: React.FC = () => {
         }
     }, [token, setTasks]);
 
-    UseAuth(fetchTasks);
+    UseAuth([fetchTasks]);
 
     const handleTaskCreated = () => {
         fetchTasks();

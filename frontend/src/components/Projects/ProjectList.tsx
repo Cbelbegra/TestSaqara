@@ -26,7 +26,7 @@ const ProjectList: React.FC = () => {
         }
     }, [token, setProjects]);
 
-    UseAuth(fetchProjects);
+    UseAuth([fetchProjects]);
 
     const handleProjectCreated = () => {
         fetchProjects();
