@@ -25,11 +25,16 @@ Ce projet est une application backend développée pour le test technique de Saq
     npm install
     ```
 
-3. Configurez les variables d'environnement en copiant `env.dist` en 3 fichiers `.env.dev`, `.env.prod`, `.env.test` à la racine du projet et en y ajoutant les variables nécessaires :
+3. Dans le repertoire backend, Configurez les variables d'environnement en copiant `env.dist` en 3 fichiers `.env.dev`, `.env.prod`, `.env.test` à la racine du projet et en y ajoutant les variables nécessaires :
 
     ```env
     MONGODB_URI=mongodb://localhost:27017/{dev|prod|test}
     JWT_SECRET=your_jwt_secret
+    ```
+4. Dans le repertoire frontend, Configurez les variables d'environnement en copiant `env.dist` en `.env`à la racine du projet et en y ajoutant les variables nécessaires :
+
+    ```env
+    REACT_APP_API_URL=http://127.0.0.1:3001
     ```
 ## Dockerisation
 
@@ -40,11 +45,12 @@ Ce projet est une application backend développée pour le test technique de Saq
     ```sh
     docker-compose up -d
     ```
-3. L'API sera disponible à l'adresse `http://localhost:3000`.
+3. Le FrontEnd sera disponible à l'adresse `http://127.0.0.1:3000`.
+4. L'API sera disponible à l'adresse `http://127.0.0.1:3001`.
 
 ## Tests
 
-Pour exécuter les tests unitaires et d'intégration, utilisez les commandes suivantes :
+Pour exécuter les tests unitaires et d'intégration du backend, utilisez les commandes suivantes :
 
 - Tests unitaires :
 
@@ -59,8 +65,8 @@ Pour exécuter les tests unitaires et d'intégration, utilisez les commandes sui
     ```
 ## Fonctionnalités
 
-- **Authentification des utilisateurs** : Inscription, connexion et gestion des tokens JWT.
-- **Gestion des utilisateurs** : Création, mise à jour et suppression des utilisateurs.
+- **Authentification des utilisateurs** : Inscription, connexion, validation et gestion des tokens JWT.
+- **Gestion des utilisateurs** : Création et authentification des utilisateurs.
 - **Gestion des projets et des tâches** : CRUD pour les projets et les tâches.
 
 ## Structure du projet
@@ -68,7 +74,23 @@ Pour exécuter les tests unitaires et d'intégration, utilisez les commandes sui
 - `backend/` et `frontend/` : contiennent respectivement le Back et le Front.
 - `{backend|frontend}/src/` : Contient le code source de l'application.
 - `{backend|frontend}/test/` : Contient les tests unitaires et d'intégration.
+- `frontend/src/types` : Contient les types, nottament pour les projets et les tâches.
+- `frontend/src/pages` : Contient les layout de page principales et de sidebar.
+- `frontend/src/components` : Contient le code de chaque composant du front.
 - `README.md` : Documentation du projet.
+
+## Routing du Frontend
+
+L'application utilise `react-router-dom` pour gérer le routing. Voici un aperçu des routes définies dans l'application :
+
+- **`/login`** : Affiche le composant `Login` pour permettre aux utilisateurs de se connecter.
+- **`/register`** : Affiche le composant `Register` pour permettre aux utilisateurs de s'inscrire.
+- **`/projects`** : Affiche le composant `ProjectList` pour afficher la liste des projets.
+- **`/projects/:projectId`** : Affiche le composant `ProjectDetail` pour afficher les détails d'un projet spécifique. Le paramètre `:projectId` est utilisé pour identifier le projet.
+- **`/tasks`** : Affiche le composant `TaskList` pour afficher la liste des tâches.
+- **`/tasks/:taskId`** : Affiche le composant `TaskDetail` pour afficher les détails d'une tâche spécifique. Le paramètre `:taskId` est utilisé pour identifier la tâche.
+
+Le fichier `App.tsx` contient la configuration du routing :
 
 ## Technologies utilisées
 
@@ -78,6 +100,8 @@ Pour exécuter les tests unitaires et d'intégration, utilisez les commandes sui
 - **bcryptjs** : Pour le hachage des mots de passe.
 - **jsonwebtoken** : Pour la gestion des tokens JWT.
 - **Docker** : Pour la containerisation de la base de données MongoDB et des services backend/frontend.
+- **React** : Bibliothèque JavaScript pour construire des interfaces utilisateur.
+- **TypeScript** : Sur-ensemble typé de JavaScript qui ajoute des types statiques.
 
 ## Auteurs
 
