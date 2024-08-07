@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const UseAuth = (onValidToken: () => void) => {
+const UseAuth = (onValidTokens: (() => void | Promise<void>)[]) => {
     const token = localStorage.getItem('jwtToken');
     const navigate = useNavigate();
 
@@ -13,20 +13,21 @@ const UseAuth = (onValidToken: () => void) => {
                     const response = await axios.get(
                         `${process.env.REACT_APP_API_URL}/auth/validate-token`,
                         {
-                            headers:
-                            {
-                                Authorization: `Bearer ${token}`
-                            }
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
                         }
                     );
                     if (response.data.valid) {
-                        onValidToken();
+                        for (const onValidToken of onValidTokens) {
+                            await onValidToken();
+                        }
                     } else {
                         navigate('/login');
                     }
                 } catch (error) {
+                    console.error('Token validation failed:', error);
                     navigate('/login');
-                    console.error(error);
                 }
             } else {
                 navigate('/login');
@@ -34,7 +35,7 @@ const UseAuth = (onValidToken: () => void) => {
         };
 
         checkToken();
-    }, [token, navigate, onValidToken]);
+    }, [token, navigate, onValidTokens]);
 };
 
 export default UseAuth;

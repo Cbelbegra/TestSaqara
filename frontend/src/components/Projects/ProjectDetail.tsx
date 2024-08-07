@@ -32,7 +32,9 @@ const ProjectDetail: React.FC = () => {
         }
     };
 
-    UseAuth(fetchProject);
+    useEffect(() => {
+        fetchProject();
+    }, []);  
 
     const handleDelete = async () => {
         try {

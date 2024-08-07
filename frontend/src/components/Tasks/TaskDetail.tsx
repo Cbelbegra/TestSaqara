@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Task, Project } from '../../types/types';
 import { toast } from 'react-toastify';
-import UseAuth from '../Hooks/UseAuth';
 
 
 const TaskDetail: React.FC = () => {
@@ -27,9 +26,6 @@ const TaskDetail: React.FC = () => {
                 }
             );
             setTask(response.data);
-            setTitle(response.data.title);
-            setDescription(response.data.description);
-            setProjectId(response.data.projectId);
         } catch (error) {
             console.error(error);
         }
@@ -51,11 +47,19 @@ const TaskDetail: React.FC = () => {
         }
     };
 
-    UseAuth(() => {
+    useEffect(() => {
         fetchTask();
         fetchProjects();
-    });
+    }, []);  
 
+    useEffect(() => {
+        if (task) {
+            setTitle(task.title);
+            setDescription(task.description);
+            setProjectId(task.projectId);
+        }
+    }, [task]);
+    
     const handleDelete = async () => {
         try {
             await axios.delete(`${process.env.REACT_APP_API_URL}/tasks/${taskId}`, {
