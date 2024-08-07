@@ -7,12 +7,25 @@ services:
       - ./backend:/app
       - /app/node_modules
     ports:
-      - "3000:3000"
+      - "3001:3001"
     depends_on:
       - mongodb
-    environment:
-      - MONGO_URI=mongodb://mongodb:27017/nest
     command: npm run start:dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://127.0.0.1:3001
+    command: npm start
 
   mongodb:
     image: mongo:latest

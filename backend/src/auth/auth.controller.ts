@@ -1,4 +1,5 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException, Get, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -16,5 +17,11 @@ export class AuthController {
             }
             throw error;
         }
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('validate-token')
+    async validateToken(@Req() req: Request) {
+        return { valid: true };
     }
 }
